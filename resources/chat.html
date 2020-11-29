@@ -3,9 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Live Chat</title>
+    <style>
+        body {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            border-style: dashed;
+            border-width: 1px;
+        }
+
+        .menu {
+            flex-basis:max-content;
+            overflow: scroll;
+        }
+
+        .discussion {
+            flex: 10;
+            display: flex;
+            flex-direction: column;
+            border-style: dashed;
+            border-width: 1px;
+        }
+
+        .user-message {
+            flex: 1;
+            border-style: dashed;
+            border-width: 1px;
+        }
+
+        .messages {
+            flex: 10;
+            display: flex;
+            flex-direction: column;
+            border-style: dashed;
+            border-width: 1px;
+            overflow: scroll;
+        }
+
+        .post-message {
+            flex: 2;
+            border-style: dashed;
+            border-width: 1px;
+        }
+
+
+    </style>
 </head>
 <body>
-<div>
+<section class="menu">
     <form id="form">
         <div>
             <label for="username-input">Input your username</label>
@@ -15,14 +60,14 @@
             <button type="submit">Submit</button>
         </div>
     </form>
-</div>
-<div id="welcome" hidden>
-    <p></p>
-</div>
-<div id="discussion-zone" hidden>
+    <div id="welcome">
+        <p></p>
+    </div>
+</section>
+<section class="discussion" >
     <h2>Messages</h2>
-    <div id="messages"></div>
-    <div id="post-message">
+    <div id="messages" class="messages"></div>
+    <div id="post-message" class="post-message">
         <form id="post">
             <div>
                 <label for="message">Enter message</label>
@@ -33,25 +78,25 @@
             </div>
         </form>
     </div>
-</div>
+</section>
 </body>
 
 <script type="text/javascript">
-    var username = null;
+    var username = "kek";
     // var wsUri = "ws://localhost:8080/ws/";
     // var websocket = new WebSocket(wsUri);
 
     const registerForm = document.getElementById("form");
     const welcomeBlock = document.getElementById("welcome");
-    const discussionZone = document.getElementById("discussion-zone");
+    const discussion = document.getElementById("discussion");
     const messageSubmit = document.getElementById("post");
 
     registerForm.onsubmit = function (event) {
         username = document.getElementById("username-input").value;
-        registerForm.setAttribute('hidden', '');
+        // registerForm.setAttribute('hidden', '');
         welcomeBlock.children[0].innerText = `Welcome ${username}!`;
-        welcomeBlock.removeAttribute('hidden');
-        discussionZone.removeAttribute('hidden');
+        // welcomeBlock.removeAttribute('hidden');
+        // discussionZone.removeAttribute('hidden');
         return false;
 
     };
@@ -59,16 +104,13 @@
         const msgInput = document.getElementById("message");
         const msg = msgInput.value
         if (msg.length > 0) {
-            console.log(`${username} says: ${msg}`);
+            document.getElementById("messages").innerHTML += `<p class="user-message">${username} says: ${msg}</p>`;
+            // console.log(`${username} says: ${msg}`);
+
             msgInput.value = '';
         }
         return false;
     };
 </script>
 
-<script type="text/sass">
-.discussion-zone {
-    display: flex
-}
-</script>
 </html>
