@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Chat</title>
+</head>
+<body>
+<div>
+    <form id="form">
+        <div>
+            <label for="username-input">Input your username</label>
+            <input id="username-input" type="text" name="username">
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+<div id="welcome" hidden>
+    <p></p>
+</div>
+<div id="discussion-zone" hidden>
+    <h2>Messages</h2>
+    <div id="messages"></div>
+    <div id="post-message">
+        <form id="post">
+            <div>
+                <label for="message">Enter message</label>
+                <input id="message" type="text" name="message">
+            </div>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+    var username = null;
+    // var wsUri = "ws://localhost:8080/ws/";
+    // var websocket = new WebSocket(wsUri);
+
+    const registerForm = document.getElementById("form");
+    const welcomeBlock = document.getElementById("welcome");
+    const discussionZone = document.getElementById("discussion-zone");
+    const messageSubmit = document.getElementById("post");
+
+    registerForm.onsubmit = function (event) {
+        username = document.getElementById("username-input").value;
+        registerForm.setAttribute('hidden', '');
+        welcomeBlock.children[0].innerText = `Welcome ${username}!`;
+        welcomeBlock.removeAttribute('hidden');
+        discussionZone.removeAttribute('hidden');
+        return false;
+
+    };
+    messageSubmit.onsubmit = function (event) {
+        const msgInput = document.getElementById("message");
+        const msg = msgInput.value
+        if (msg.length > 0) {
+            console.log(`${username} says: ${msg}`);
+            msgInput.value = '';
+        }
+        return false;
+    };
+</script>
+
+<script type="text/sass">
+.discussion-zone {
+    display: flex
+}
+</script>
+</html>
