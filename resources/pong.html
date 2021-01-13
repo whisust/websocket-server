@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pong: The Game!</title>
+    <style>
+        canvas {
+            border: solid 1px black;
+        }
+    </style>
+</head>
+<body>
+<canvas id="game" width="1280" height="768"></canvas>
+</body>
+<script>
+    let canvas = document.getElementById("game");
+
+    const MAX_HEIGHT = 768;
+    const MAX_WIDTH = 1280;
+    let gameContext = {
+        player: {
+            position: {
+                x: 5,
+                y: 5
+            },
+            velocity: {
+                x: 0,
+                y: 1
+            },
+            width: 10,
+            height: 50,
+            color: "rgb(200, 0, 0)"
+        }
+    };
+
+    function step(timestamp) {
+        const context = canvas.getContext("2d");
+        context.clearRect(0, 0, MAX_WIDTH, MAX_HEIGHT);
+
+        context.fillStyle = gameContext.player.color;
+        context.fillRect(
+            gameContext.player.position.x,
+            gameContext.player.position.y,
+            gameContext.player.width,
+            gameContext.player.height
+        )
+
+        if (gameContext.player.position.y >= 700) {
+            gameContext.player.velocity.y = -1;
+        }
+
+        if (gameContext.player.position.y <= 18) {
+            gameContext.player.velocity.y = 1;
+        }
+
+        gameContext.player.position.x = gameContext.player.position.x + gameContext.player.velocity.x;
+        gameContext.player.position.y = gameContext.player.position.y + gameContext.player.velocity.y;
+    }
+
+    function draw() {
+        window.requestAnimationFrame(step);
+    }
+
+    let frequency = 60/1000;
+    let interval = window.setInterval(draw, frequency);
+
+    canvas.onclick = () => {
+        if (interval) {
+            window.clearInterval(interval);
+            interval = null;
+        } else {
+            interval = window.setInterval(draw, frequency);
+        }
+    }
+
+
+    
+</script>
+</html>
