@@ -10,4 +10,4 @@ edition = "2018"
 actix = "0.10.0"
 actix-web = { version = "3", features = ["openssl"] }
 actix-web-actors = { version = "3" }
-openssl = { version = "0.10", features = ["v110"] }
+openssl = { version = "0.10.32", features = ["v110"] }
