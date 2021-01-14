@@ -10,70 +10,94 @@
     </style>
 </head>
 <body>
-<canvas id="game" width="1280" height="768"></canvas>
+<canvas id="game" width="800" height="500"></canvas>
 </body>
 <script>
     let canvas = document.getElementById("game");
 
-    const MAX_HEIGHT = 768;
-    const MAX_WIDTH = 1280;
-    let gameContext = {
-        player: {
+    const MAX_HEIGHT = canvas.height;
+    const MAX_WIDTH = canvas.width;
+    const MARGIN = 5;
+    const PLAYER_WIDTH = 10;
+    const PLAYER_HEIGHT = 80;
+    const BASE_VELOCITY = 3;
+    function newPlayer(x, y) {
+        return {
             position: {
-                x: 5,
-                y: 5
+                x,
+                y: y || (MAX_HEIGHT - PLAYER_HEIGHT) / 2
             },
             velocity: {
                 x: 0,
-                y: 1
+                y: 0
             },
-            width: 10,
-            height: 50,
+            width: PLAYER_WIDTH,
+            height: PLAYER_HEIGHT,
             color: "rgb(200, 0, 0)"
         }
+    }
+    let gameContext = {
+        player1: newPlayer(5),
+        player2: newPlayer(MAX_WIDTH - (PLAYER_WIDTH + MARGIN))
     };
+
+    function movePlayer(player) {
+        const newPos = player.position.y + player.velocity.y;
+        player.position.y = Math.max(MARGIN, Math.min(MAX_HEIGHT - (PLAYER_HEIGHT + MARGIN), newPos));
+    }
+
+    function drawPlayer(player) {
+        return (context) => {
+            context.fillStyle = player.color;
+            context.fillRect(
+                player.position.x,
+                player.position.y,
+                player.width,
+                player.height
+            )
+        }
+    }
 
     function step(timestamp) {
         const context = canvas.getContext("2d");
         context.clearRect(0, 0, MAX_WIDTH, MAX_HEIGHT);
+        movePlayer(gameContext.player1);
+        movePlayer(gameContext.player2);
 
-        context.fillStyle = gameContext.player.color;
-        context.fillRect(
-            gameContext.player.position.x,
-            gameContext.player.position.y,
-            gameContext.player.width,
-            gameContext.player.height
-        )
-
-        if (gameContext.player.position.y >= 700) {
-            gameContext.player.velocity.y = -1;
-        }
-
-        if (gameContext.player.position.y <= 18) {
-            gameContext.player.velocity.y = 1;
-        }
-
-        gameContext.player.position.x = gameContext.player.position.x + gameContext.player.velocity.x;
-        gameContext.player.position.y = gameContext.player.position.y + gameContext.player.velocity.y;
+        drawPlayer(gameContext.player1)(context);
+        drawPlayer(gameContext.player2)(context);
     }
 
     function draw() {
         window.requestAnimationFrame(step);
     }
 
-    let frequency = 60/1000;
+    document.addEventListener("keydown", function(event) {
+        if(event.key === "z") {
+            gameContext.player1.velocity.y = -BASE_VELOCITY;
+        } else if(event.key === "s") {
+            gameContext.player1.velocity.y = BASE_VELOCITY;
+        } else if(event.key === "ArrowUp") {
+            gameContext.player2.velocity.y = -BASE_VELOCITY;
+        } else if(event.key === "ArrowDown") {
+            gameContext.player2.velocity.y = BASE_VELOCITY;
+        }
+    })
+
+    document.addEventListener("keyup", function(event) {
+        if(event.key === "z" || event.key === "s") {
+            gameContext.player1.velocity.y = 0;
+        } else if(event.key === "ArrowUp" || event.key === "ArrowDown") {
+            gameContext.player2.velocity.y = 0;
+        }
+    })
+
+
+
+    let frequency = 60/1000; // 60 fps
     let interval = window.setInterval(draw, frequency);
 
-    canvas.onclick = () => {
-        if (interval) {
-            window.clearInterval(interval);
-            interval = null;
-        } else {
-            interval = window.setInterval(draw, frequency);
-        }
-    }
-
-
+    canvas.onclick = () => {}
     
 </script>
 </html>
